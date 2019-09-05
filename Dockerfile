@@ -1,29 +1,18 @@
-#Docker base image : Alpine Linux with OpenJDK JRE
-FROM openjdk:8-jre-alpine
+# Extend vert.x image                       (1)
+FROM vertx/vertx3
 
-#Check the java version
-RUN ["java", "-version"]
+# Set the name of the verticle to deploy    (2)
+ENV VERTICLE_NAME hello-verticle.js
 
-#Install maven
-RUN apt-get update
-RUN apt-get install -y maven
+# Set the location of the verticles         (3)
+ENV VERTICLE_HOME /usr/verticles
 
-#Set the working directory for RUN and ADD commands
-WORKDIR /code
+EXPOSE 8080
 
-#Copy the SRC, LIB and pom.xml to WORKDIR
-ADD pom.xml /code/pom.xml
-ADD lib /code/lib
-ADD src /code/src
+# Copy your verticle to the container       (4)
+COPY $VERTICLE_NAME $VERTICLE_HOME/
 
-#Build the code
-RUN ["mvn", "clean"]
-RUN ["mvn", "install"]
-
-#Optional you can include commands to run test cases.
-
-#Port the container listens on
-EXPOSE 8081
-
-#CMD to be executed when docker is run.
-ENTRYPOINT ["java","-jar","target/recruitment-service-0.0.1.jar"]
+# Launch the verticle                       (5)
+WORKDIR $VERTICLE_HOME
+ENTRYPOINT ["sh", "-c"]
+CMD ["exec vertx run $VERTICLE_NAME -cp $VERTICLE_HOME/*"]
