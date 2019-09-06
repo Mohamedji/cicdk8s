@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
       - name: myapp
+        imagePullPolicy: Always
         image: mohamedji/myapp
         ports:
         - containerPort: 8080
-      imagePullPolicy: Always
+      
 ---
 apiVersion: v1
 kind: Service
