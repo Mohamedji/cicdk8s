@@ -21,7 +21,7 @@ spec:
       containers:
       - name: myapp
         imagePullPolicy: Always
-        image: mohamedji/myapp
+        image: mohamedji/myapp:v2
         ports:
         - containerPort: 8080     
 ---
